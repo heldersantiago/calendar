@@ -1,1 +1,34 @@
-<p>calendar works!</p>
+<!-- features/calendar/calendar.component.html -->
+<div class="calendar-container">
+  <div class="calendar-header">
+    <button mat-icon-button (click)="previousMonth()">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+
+    <h2>{{ getMonthName(currentMonth) }} {{ currentMonth.getFullYear() }}</h2>
+
+    <button mat-icon-button (click)="nextMonth()">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+
+  <div class="weekdays">
+    <div class="weekday">Sun</div>
+    <div class="weekday">Mon</div>
+    <div class="weekday">Tue</div>
+    <div class="weekday">Wed</div>
+    <div class="weekday">Thu</div>
+    <div class="weekday">Fri</div>
+    <div class="weekday">Sat</div>
+  </div>
+
+  <div class="calendar-grid">
+    <ng-container *ngFor="let day of calendarDays">
+      <app-calendar-day
+        [date]="day"
+        [isCurrentMonth]="day.getMonth() === currentMonth.getMonth()"
+        (newAppointment)="openNewAppointmentDialog(day)">
+      </app-calendar-day>
+    </ng-container>
+  </div>
+</div>
