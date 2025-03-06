@@ -13,6 +13,7 @@ export class AppointmentService {
   constructor() {
     // Load from localStorage if available
     const savedAppointments = localStorage.getItem('appointments');
+
     if (savedAppointments) {
       const parsedAppointments = JSON.parse(savedAppointments);
 

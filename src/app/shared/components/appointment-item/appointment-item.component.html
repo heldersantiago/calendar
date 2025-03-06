@@ -1,0 +1,26 @@
+<!-- shared/components/appointment-item/appointment-item.component.html -->
+<div class="appointment-item" [style.background-color]="appointment.color">
+  <div class="appointment-content">
+    <div class="appointment-time">
+      {{ appointment.startTime }} - {{ appointment.endTime }}
+    </div>
+    <div class="appointment-title">{{ appointment.title }}</div>
+  </div>
+
+  <div class="appointment-actions">
+    <button
+      mat-icon-button
+      class="edit-button"
+      (click)="editAppointment($event)"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      class="delete-button"
+      (click)="deleteAppointment($event)"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>

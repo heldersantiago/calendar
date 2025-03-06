@@ -1,0 +1,25 @@
+/* features/calendar/components/appointment-form/appointment-form.component.scss */
+.full-width {
+  width: 100%;
+}
+
+.time-fields {
+  display: flex;
+  gap: 16px;
+
+  mat-form-field {
+    flex: 1;
+  }
+}
+
+.color-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.color-preview {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
