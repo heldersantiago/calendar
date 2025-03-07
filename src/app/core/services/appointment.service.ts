@@ -3,6 +3,11 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Appointment } from '../models/appointment';
+import {
+  CdkDragDrop,
+  moveItemInArray,
+  transferArrayItem,
+} from '@angular/cdk/drag-drop';
 
 @Injectable({
   providedIn: 'root',
@@ -91,6 +96,25 @@ export class AppointmentService {
       };
       this.appointments.next(appointments);
       this.saveToLocalStorage(appointments);
+    }
+  }
+
+  moveAppointment1(event: CdkDragDrop<Appointment[]>): void {
+    if (event.previousContainer === event.container) {
+      // Reordering within the same day
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    } else {
+      // Moving to a different day
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
     }
   }
 
