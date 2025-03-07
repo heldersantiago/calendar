@@ -1,13 +1,23 @@
 // features/calendar/components/appointment-form/appointment-form.component.ts
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, inject, Inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogModule,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { Appointment } from '../../../../core/models/appointment';
+import { DialogService } from '../../../../shared/services/dialog.service';
 
 @Component({
   selector: 'app-appointment-form',
@@ -21,18 +31,30 @@ import { Appointment } from '../../../../core/models/appointment';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatSelectModule
-  ]
+    MatSelectModule,
+  ],
 })
-export class AppointmentFormComponent implements OnInit {
+export class AppointmentFormComponent implements OnInit, OnDestroy {
   appointmentForm!: FormGroup;
   timeSlots: string[] = [];
-  colors: string[] = ['#FF5252', '#FF4081', '#7C4DFF', '#536DFE', '#448AFF', '#40C4FF', '#18FFFF', '#64FFDA', '#69F0AE', '#B2FF59'];
-
+  colors: string[] = [
+    '#FF5252',
+    '#FF4081',
+    '#7C4DFF',
+    '#536DFE',
+    '#448AFF',
+    '#40C4FF',
+    '#18FFFF',
+    '#64FFDA',
+    '#69F0AE',
+    '#B2FF59',
+  ];
+  private dialogService = inject(DialogService);
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<AppointmentFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { date: Date, appointment?: Appointment }
+    @Inject(MAT_DIALOG_DATA)
+    public data: { date: Date; appointment?: Appointment }
   ) {
     // Generate time slots from 8:00 AM to 8:00 PM in 30-minute intervals
     for (let hour = 8; hour <= 20; hour++) {
@@ -48,25 +70,42 @@ export class AppointmentFormComponent implements OnInit {
     this.initForm();
 
     // When start time changes, automatically set end time 30 minutes later
-    this.appointmentForm.get('startTime')?.valueChanges.subscribe(startTime => {
-      if (startTime) {
-        const startIndex = this.timeSlots.findIndex(time => time === startTime);
-        if (startIndex < this.timeSlots.length - 1) {
-          this.appointmentForm.get('endTime')?.setValue(this.timeSlots[startIndex + 1]);
+    this.appointmentForm
+      .get('startTime')
+      ?.valueChanges.subscribe((startTime) => {
+        if (startTime) {
+          const startIndex = this.timeSlots.findIndex(
+            (time) => time === startTime
+          );
+          if (startIndex < this.timeSlots.length - 1) {
+            this.appointmentForm
+              .get('endTime')
+              ?.setValue(this.timeSlots[startIndex + 1]);
+          }
         }
-      }
-    });
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.dialogService.closeEditAppointmentDialog();
+    this.dialogService.closeNewAppointmentDialog();
   }
 
   initForm(): void {
     const appointment = this.data.appointment;
 
     this.appointmentForm = this.fb.group({
-      title: [appointment?.title || '', [Validators.required, Validators.maxLength(50)]],
+      title: [
+        appointment?.title || '',
+        [Validators.required, Validators.maxLength(50)],
+      ],
       description: [appointment?.description || ''],
-      startTime: [appointment?.startTime || this.timeSlots[0], Validators.required],
+      startTime: [
+        appointment?.startTime || this.timeSlots[0],
+        Validators.required,
+      ],
       endTime: [appointment?.endTime || this.timeSlots[1], Validators.required],
-      color: [appointment?.color || this.colors[0]]
+      color: [appointment?.color || this.colors[0]],
     });
   }
 
@@ -81,7 +120,7 @@ export class AppointmentFormComponent implements OnInit {
         date: this.data.date,
         startTime: formValue.startTime,
         endTime: formValue.endTime,
-        color: formValue.color
+        color: formValue.color,
       };
 
       this.dialogRef.close(appointment);
@@ -89,6 +128,8 @@ export class AppointmentFormComponent implements OnInit {
   }
 
   onCancel(): void {
+    this.dialogService.closeNewAppointmentDialog();
+    this.dialogService.closeEditAppointmentDialog();
     this.dialogRef.close();
   }
 }

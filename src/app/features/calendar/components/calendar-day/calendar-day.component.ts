@@ -19,6 +19,7 @@ import { Appointment } from '../../../../core/models/appointment';
 import { AppointmentItemComponent } from '../../../../shared/components/appointment-item/appointment-item.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AppointmentFormComponent } from '../appointment-form/appointment-form.component';
+import { DialogService } from '../../../../shared/services/dialog.service';
 
 @Component({
   selector: 'app-calendar-day',
@@ -44,6 +45,7 @@ export class CalendarDayComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
 
   constructor(
+    private dialogService: DialogService,
     private dialog: MatDialog,
     private appointmentService: AppointmentService
   ) {}
@@ -59,6 +61,9 @@ export class CalendarDayComponent implements OnInit, OnDestroy {
   }
 
   addAppointment(): void {
+    if (this.dialogService.isEditAppointmentOpened()) {
+      return;
+    }
     this.newAppointment.emit(this.date);
   }
 
@@ -68,6 +73,8 @@ export class CalendarDayComponent implements OnInit, OnDestroy {
   }
 
   onEditAppointment(appointment: Appointment): void {
+    this.dialogService.closeNewAppointmentDialog();
+    this.dialogService.openEditAppointmentDialog();
     const dialogRef = this.dialog.open(AppointmentFormComponent, {
       width: '400px',
       data: {
@@ -79,6 +86,7 @@ export class CalendarDayComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.appointmentService.updateAppointment(result);
+        this.dialogService.closeEditAppointmentDialog();
       }
     });
   }

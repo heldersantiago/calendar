@@ -16,6 +16,7 @@
   >
     <ng-container *ngFor="let appointment of appointments$ | async">
       <app-appointment-item
+        (click)="onEditAppointment(appointment)"
         [appointment]="appointment"
         cdkDrag
         [cdkDragData]="appointment.id"
