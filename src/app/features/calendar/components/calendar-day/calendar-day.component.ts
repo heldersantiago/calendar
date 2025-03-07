@@ -15,8 +15,8 @@ import { MatCardModule } from '@angular/material/card';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { AppointmentService } from '../../../../core/services/appointment.service';
 import { Observable, Subscription } from 'rxjs';
-import { AppointmentItemComponent } from '../../../../shared/components/appointment-item/appointment-item.component';
 import { Appointment } from '../../../../core/models/appointment';
+import { AppointmentItemComponent } from '../../../../shared/components/appointment-item/appointment-item.component';
 
 @Component({
   selector: 'app-calendar-day',
@@ -30,6 +30,7 @@ import { Appointment } from '../../../../core/models/appointment';
     MatMenuModule,
     MatCardModule,
     DragDropModule,
+    AppointmentItemComponent,
   ],
 })
 export class CalendarDayComponent implements OnInit, OnDestroy {
@@ -61,14 +62,19 @@ export class CalendarDayComponent implements OnInit, OnDestroy {
     this.appointmentService.deleteAppointment(id);
   }
 
-  onDrop(event: CdkDragDrop<Appointment[]>): void {
+  editAppointment(appointment: Appointment, event: Event): void {
+    event.stopPropagation();
+    this.appointmentService.updateAppointment(appointment);
+  }
+
+  onDrop(event: CdkDragDrop<Appointment[] | null>): void {
     if (event.previousContainer === event.container) {
       // Same day, just reordering
       return;
     }
 
     // Get the dragged appointment
-    const appointmentId = event.item.data;
+    const appointmentId = event.item.data ?? [];
 
     // Update the appointment with the new date
     this.appointmentService.moveAppointment(appointmentId, this.date);
