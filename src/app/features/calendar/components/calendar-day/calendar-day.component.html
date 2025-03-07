@@ -1,1 +1,30 @@
-<p>calendar-day works!</p>
+<!-- features/calendar/components/calendar-day/calendar-day.component.html -->
+<div
+  (click)="addAppointment()"
+  class="calendar-day"
+  [class.other-month]="!isCurrentMonth"
+>
+  <div class="day-header">
+    <span class="day-number">{{ date.getDate() }}</span>
+  </div>
+
+  <div
+    class="appointments-container"
+    cdkDropList
+    [cdkDropListData]="appointments$ | async"
+    (cdkDropListDropped)="onDrop($event)"
+  >
+    <ng-container *ngFor="let appointment of appointments$ | async">
+      <app-appointment-item
+        (click)="onEditAppointment(appointment)"
+        [appointment]="appointment"
+        cdkDrag
+        [cdkDragData]="appointment.id"
+        (delete)="onDeleteAppointment(appointment.id)"
+        (edit)="onEditAppointment(appointment)"
+      >
+        >
+      </app-appointment-item>
+    </ng-container>
+  </div>
+</div>
