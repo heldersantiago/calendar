@@ -12,18 +12,20 @@ export class AppointmentService {
 
   constructor() {
     // Load from localStorage if available
-    const savedAppointments = localStorage.getItem('appointments');
+    if (this.isLocalStorageAvailable()) {
+      const savedAppointments = localStorage.getItem('appointments');
 
-    if (savedAppointments) {
-      const parsedAppointments = JSON.parse(savedAppointments);
+      if (savedAppointments) {
+        const parsedAppointments = JSON.parse(savedAppointments);
 
-      // Convert string dates back to Date objects
-      const appointments = parsedAppointments.map((appointment: any) => ({
-        ...appointment,
-        date: new Date(appointment.date),
-      }));
+        // Convert string dates back to Date objects
+        const appointments = parsedAppointments.map((appointment: any) => ({
+          ...appointment,
+          date: new Date(appointment.date),
+        }));
 
-      this.appointments.next(appointments);
+        this.appointments.next(appointments);
+      }
     }
   }
 
@@ -89,6 +91,17 @@ export class AppointmentService {
       };
       this.appointments.next(appointments);
       this.saveToLocalStorage(appointments);
+    }
+  }
+
+  private isLocalStorageAvailable(): boolean {
+    try {
+      const test = '__localStorageTest__';
+      localStorage.setItem(test, test);
+      localStorage.removeItem(test);
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 

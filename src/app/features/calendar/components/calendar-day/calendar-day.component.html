@@ -19,8 +19,10 @@
         [appointment]="appointment"
         cdkDrag
         [cdkDragData]="appointment.id"
-        (edit)="editAppointment(appointment, $event)"
+        (delete)="onDeleteAppointment(appointment.id)"
+        (edit)="onEditAppointment(appointment)"
       >
+        >
       </app-appointment-item>
     </ng-container>
   </div>

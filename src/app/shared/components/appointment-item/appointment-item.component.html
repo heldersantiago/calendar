@@ -8,18 +8,10 @@
   </div>
 
   <div class="appointment-actions">
-    <button
-      mat-icon-button
-      class="edit-button"
-      (click)="editAppointment(appointment.id,$event)"
-    >
+    <button mat-icon-button class="edit-button" (click)="onEdit($event)">
       <mat-icon>edit</mat-icon>
     </button>
-    <button
-      mat-icon-button
-      class="delete-button"
-      (click)="deleteAppointment(appointment.id,$event)"
-    >
+    <button mat-icon-button class="delete-button" (click)="onDelete($event)">
       <mat-icon>delete</mat-icon>
     </button>
   </div>

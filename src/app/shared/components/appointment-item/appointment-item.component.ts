@@ -17,33 +17,16 @@ import { Appointment } from '../../../core/models/appointment';
 })
 export class AppointmentItemComponent {
   @Input() appointment!: Appointment;
-  @Output() delete = new EventEmitter<Event>();
+  @Output() delete = new EventEmitter<string>();
+  @Output() edit = new EventEmitter<Appointment>();
 
-  constructor(
-    private dialog: MatDialog,
-    private appointmentService: AppointmentService
-  ) {}
-
-  editAppointment(id:string, event: Event): void {
+  onDelete(event: Event) {
     event.stopPropagation();
-
-    const dialogRef = this.dialog.open(AppointmentFormComponent, {
-      width: '400px',
-      data: {
-        date: this.appointment.date,
-        appointment: this.appointment,
-      },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.appointmentService.updateAppointment(result);
-      }
-    });
+    this.delete.emit(this.appointment.id);
   }
 
-  deleteAppointment(id:string, event: Event): void {
+  onEdit(event: Event): void {
     event.stopPropagation();
-    this.appointmentService.deleteAppointment(id);
+    this.edit.emit(this.appointment);
   }
 }

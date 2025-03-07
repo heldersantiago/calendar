@@ -17,6 +17,8 @@ import { AppointmentService } from '../../../../core/services/appointment.servic
 import { Observable, Subscription } from 'rxjs';
 import { Appointment } from '../../../../core/models/appointment';
 import { AppointmentItemComponent } from '../../../../shared/components/appointment-item/appointment-item.component';
+import { MatDialog } from '@angular/material/dialog';
+import { AppointmentFormComponent } from '../appointment-form/appointment-form.component';
 
 @Component({
   selector: 'app-calendar-day',
@@ -41,7 +43,10 @@ export class CalendarDayComponent implements OnInit, OnDestroy {
   appointments$!: Observable<Appointment[]>;
   private subscription = new Subscription();
 
-  constructor(private appointmentService: AppointmentService) {}
+  constructor(
+    private dialog: MatDialog,
+    private appointmentService: AppointmentService
+  ) {}
 
   ngOnInit(): void {
     this.appointments$ = this.appointmentService.getAppointmentsByDate(
@@ -57,14 +62,25 @@ export class CalendarDayComponent implements OnInit, OnDestroy {
     this.newAppointment.emit(this.date);
   }
 
-  deleteAppointment(id: string, event: Event): void {
-    event.stopPropagation();
+  onDeleteAppointment(id: string): void {
+    console.log(id);
     this.appointmentService.deleteAppointment(id);
   }
 
-  editAppointment(appointment: Appointment, event: Event): void {
-    event.stopPropagation();
-    this.appointmentService.updateAppointment(appointment);
+  onEditAppointment(appointment: Appointment): void {
+    const dialogRef = this.dialog.open(AppointmentFormComponent, {
+      width: '400px',
+      data: {
+        date: appointment.date,
+        appointment: appointment,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.appointmentService.updateAppointment(result);
+      }
+    });
   }
 
   onDrop(event: CdkDragDrop<Appointment[] | null>): void {
