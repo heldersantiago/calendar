@@ -21,9 +21,9 @@ import { AppointmentService } from '../../core/services/appointment.service';
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
-    CalendarDayComponent
+    CalendarDayComponent,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarComponent implements OnInit {
   calendarDays: Date[] = [];
@@ -52,22 +52,38 @@ export class CalendarComponent implements OnInit {
     const firstDayOfWeek = firstDay.getDay();
 
     // Add previous month's days to complete the first week
-    const prevMonthLastDay = new Date(month.getFullYear(), month.getMonth(), 0).getDate();
+    const prevMonthLastDay = new Date(
+      month.getFullYear(),
+      month.getMonth(),
+      0
+    ).getDate();
     for (let i = firstDayOfWeek - 1; i >= 0; i--) {
-      const prevMonthDay = new Date(month.getFullYear(), month.getMonth() - 1, prevMonthLastDay - i);
+      const prevMonthDay = new Date(
+        month.getFullYear(),
+        month.getMonth() - 1,
+        prevMonthLastDay - i
+      );
       this.calendarDays.push(prevMonthDay);
     }
 
     // Add current month's days
     for (let i = 1; i <= lastDay.getDate(); i++) {
-      const currentMonthDay = new Date(month.getFullYear(), month.getMonth(), i);
+      const currentMonthDay = new Date(
+        month.getFullYear(),
+        month.getMonth(),
+        i
+      );
       this.calendarDays.push(currentMonthDay);
     }
 
     // Add next month's days to complete the last week
     const lastDayOfWeek = lastDay.getDay();
     for (let i = 1; i < 7 - lastDayOfWeek; i++) {
-      const nextMonthDay = new Date(month.getFullYear(), month.getMonth() + 1, i);
+      const nextMonthDay = new Date(
+        month.getFullYear(),
+        month.getMonth() + 1,
+        i
+      );
       this.calendarDays.push(nextMonthDay);
     }
   }
@@ -75,10 +91,10 @@ export class CalendarComponent implements OnInit {
   openNewAppointmentDialog(date: Date): void {
     const dialogRef = this.dialog.open(AppointmentFormComponent, {
       width: '400px',
-      data: { date: date }
+      data: { date: date },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.appointmentService.addAppointment(result);
       }
@@ -86,12 +102,20 @@ export class CalendarComponent implements OnInit {
   }
 
   previousMonth(): void {
-    this.currentMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() - 1, 1);
+    this.currentMonth = new Date(
+      this.currentMonth.getFullYear(),
+      this.currentMonth.getMonth() - 1,
+      1
+    );
     this.generateCalendarDays(this.currentMonth);
   }
 
   nextMonth(): void {
-    this.currentMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + 1, 1);
+    this.currentMonth = new Date(
+      this.currentMonth.getFullYear(),
+      this.currentMonth.getMonth() + 1,
+      1
+    );
     this.generateCalendarDays(this.currentMonth);
   }
 
