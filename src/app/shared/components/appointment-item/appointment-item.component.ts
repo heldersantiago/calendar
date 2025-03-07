@@ -24,7 +24,7 @@ export class AppointmentItemComponent {
     private appointmentService: AppointmentService
   ) {}
 
-  editAppointment(event: Event): void {
+  editAppointment(id:string, event: Event): void {
     event.stopPropagation();
 
     const dialogRef = this.dialog.open(AppointmentFormComponent, {
@@ -42,7 +42,8 @@ export class AppointmentItemComponent {
     });
   }
 
-  deleteAppointment(event: Event): void {
-    this.delete.emit(event);
+  deleteAppointment(id:string, event: Event): void {
+    event.stopPropagation();
+    this.appointmentService.deleteAppointment(id);
   }
 }

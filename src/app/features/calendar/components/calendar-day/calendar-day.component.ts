@@ -62,6 +62,11 @@ export class CalendarDayComponent implements OnInit, OnDestroy {
     this.appointmentService.deleteAppointment(id);
   }
 
+  editAppointment(appointment: Appointment, event: Event): void {
+    event.stopPropagation();
+    this.appointmentService.updateAppointment(appointment);
+  }
+
   onDrop(event: CdkDragDrop<Appointment[] | null>): void {
     if (event.previousContainer === event.container) {
       // Same day, just reordering

@@ -1,10 +1,11 @@
 <!-- features/calendar/components/calendar-day/calendar-day.component.html -->
-<div class="calendar-day" [class.other-month]="!isCurrentMonth">
+<div
+  (click)="addAppointment()"
+  class="calendar-day"
+  [class.other-month]="!isCurrentMonth"
+>
   <div class="day-header">
     <span class="day-number">{{ date.getDate() }}</span>
-    <button mat-icon-button class="add-button" (click)="addAppointment()">
-      <mat-icon>add</mat-icon>
-    </button>
   </div>
 
   <div
@@ -18,7 +19,7 @@
         [appointment]="appointment"
         cdkDrag
         [cdkDragData]="appointment.id"
-        (delete)="deleteAppointment(appointment.id, $event)"
+        (edit)="editAppointment(appointment, $event)"
       >
       </app-appointment-item>
     </ng-container>

@@ -11,14 +11,14 @@
     <button
       mat-icon-button
       class="edit-button"
-      (click)="editAppointment($event)"
+      (click)="editAppointment(appointment.id,$event)"
     >
       <mat-icon>edit</mat-icon>
     </button>
     <button
       mat-icon-button
       class="delete-button"
-      (click)="deleteAppointment($event)"
+      (click)="deleteAppointment(appointment.id,$event)"
     >
       <mat-icon>delete</mat-icon>
     </button>
