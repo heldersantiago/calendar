@@ -11,8 +11,10 @@
   <div
     class="appointments-container"
     cdkDropList
-    [cdkDropListData]="appointments$ | async"
-    (cdkDropListDropped)="onDrop($event)"
+    [id]="dropListId"
+    [cdkDropListData]="(appointments$ | async) ?? []"
+    [cdkDropListConnectedTo]="connectedDropListIds"
+    (cdkDropListDropped)="onAppointmentDrop($event)"
   >
     <ng-container *ngFor="let appointment of appointments$ | async">
       <app-appointment-item

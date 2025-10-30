@@ -6,15 +6,20 @@ import {
   EventEmitter,
   OnInit,
   OnDestroy,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule } from '@angular/material/card';
-import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
+import {
+  CdkDragDrop,
+  DragDropModule,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 import { AppointmentService } from '../../../../core/services/appointment.service';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { Appointment } from '../../../../core/models/appointment';
 import { AppointmentItemComponent } from '../../../../shared/components/appointment-item/appointment-item.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -38,17 +43,26 @@ import { DialogService } from '../../../../shared/services/dialog.service';
 })
 export class CalendarDayComponent implements OnInit, OnDestroy {
   @Input() date!: Date;
+
   @Input() isCurrentMonth = true;
+
   @Output() newAppointment = new EventEmitter<Date>();
 
-  appointments$!: Observable<Appointment[]>;
+  @Input() dropListId!: string;
+
+  @Input() connectedDropListIds: string[] = [];
+
+  @Output() appointmentDrop = new EventEmitter<CdkDragDrop<Appointment[]>>();
+
+  appointments$: Observable<Appointment[]> = of([]);
+
   private subscription = new Subscription();
 
-  constructor(
-    private dialogService: DialogService,
-    private dialog: MatDialog,
-    private appointmentService: AppointmentService
-  ) {}
+  private dialogService = inject(DialogService);
+
+  protected dialog = inject(MatDialog);
+
+  private appointmentService = inject(AppointmentService);
 
   ngOnInit(): void {
     this.appointments$ = this.appointmentService.getAppointmentsByDate(
@@ -91,16 +105,7 @@ export class CalendarDayComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDrop(event: CdkDragDrop<Appointment[] | null>): void {
-    if (event.previousContainer === event.container) {
-      // Same day, just reordering
-      return;
-    }
-
-    // Get the dragged appointment
-    const appointmentId = event.item.data ?? [];
-
-    // Update the appointment with the new date
-    this.appointmentService.moveAppointment(appointmentId, this.date);
+  onAppointmentDrop(event: CdkDragDrop<Appointment[]>) {
+    this.appointmentDrop.emit(event);
   }
 }

@@ -23,12 +23,14 @@
   </div>
 
   <div class="calendar-grid">
-    <ng-container *ngFor="let day of calendarDays">
+    <ng-container *ngFor="let day of calendarDays; let i = index">
       <app-calendar-day
         [date]="day"
-        [isCurrentMonth]="day.getMonth() === currentMonth.getMonth()"
-        (newAppointment)="openNewAppointmentDialog(day)"
-      >
+        [dropListId]="day.getDay().toFixed(2)"
+        (appointmentDrop)="onDrop($event)"
+        [connectedDropListIds]="getConnectedDropListIds()"
+        >" [isCurrentMonth]="day.getMonth() === currentMonth.getMonth()"
+        (newAppointment)="openNewAppointmentDialog(day)" >
       </app-calendar-day>
     </ng-container>
   </div>

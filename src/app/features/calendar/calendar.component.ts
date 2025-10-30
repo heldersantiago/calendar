@@ -9,6 +9,8 @@ import { ChangeDetectionStrategy } from '@angular/core';
 import { AppointmentFormComponent } from './components/appointment-form/appointment-form.component';
 import { CalendarDayComponent } from './components/calendar-day/calendar-day.component';
 import { AppointmentService } from '../../core/services/appointment.service';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { Appointment } from '../../core/models/appointment';
 
 @Component({
   selector: 'app-calendar',
@@ -121,5 +123,27 @@ export class CalendarComponent implements OnInit {
 
   getMonthName(date: Date): string {
     return date.toLocaleString('default', { month: 'long' });
+  }
+
+  onDrop(event: CdkDragDrop<Appointment[]>): void {
+    console.log('previous container calendar day');
+    console.log(event.previousContainer);
+
+    console.log('current container calendar day, the on to update upon');
+    console.log(event.container);
+
+    if (event.previousContainer === event.container) {
+      return;
+    }
+
+    // Get the dragged appointment
+    const appointmentId = event.item.data;
+
+    // Update the appointment with the new date
+    this.appointmentService.moveAppointment1(event);
+  }
+
+  getConnectedDropListIds(): string[] {
+    return this.calendarDays.map((_, i) => `day-${i}`);
   }
 }
